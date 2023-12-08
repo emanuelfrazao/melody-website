@@ -40,6 +40,7 @@ if uploaded_file is not None:
         with st.spinner('Converting your chords to MIDI...'):
             midi = convert_to_midi(uploaded_file)
             instrument = midi.instruments[0]
+            instrument.program = 25
 
             
         with st.spinner('Generating your melody...'):
@@ -54,7 +55,7 @@ if uploaded_file is not None:
         # 4. Get melody generation from model
             melody = generate(x_num, x_cat, temperature=0.8)
             melody_df = postprocess_melody_encoded(melody)
-            melody_instrument = dataframe_to_instrument(melody_df, program=25)
+            melody_instrument = dataframe_to_instrument(melody_df, program=1)
             st.success("Melody generated!")
 
         # 5. Join model generation with original MIDI track
