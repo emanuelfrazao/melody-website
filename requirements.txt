@@ -1,8 +1,6 @@
-mido
-pretty-midi
-pyfluidsynth
-scipy
-soundfile 
 streamlit
-
+pretty-midi
 basic-pitch
+tensorflow
+numpy
+pandas
