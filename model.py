@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow
 from keras import Model, Input, layers
 
-def init_lstm_bidirect(hidden_dim, ohe_embed_dim):
+def init_architecture(hidden_dim, ohe_embed_dim, dropout):
     # 1. Define encoder
     e_num_input = Input(shape=(None, 5), name='input_num_feat')
     e_num = layers.Masking()(e_num_input)
@@ -12,14 +12,8 @@ def init_lstm_bidirect(hidden_dim, ohe_embed_dim):
     e_ohe = layers.Dense(ohe_embed_dim, use_bias=False)(e_ohe)
 
     e_out = layers.concatenate([e_num, e_ohe])
-    e_out, e_h1, e_m1, e_h2, e_m2 = layers.Bidirectional(
-        layers.LSTM(hidden_dim, return_state=True, name='encoder1'),
-        merge_mode='sum'
-    )(e_out)
-
-    e_hidden = layers.concatenate([e_h1, e_h2])
-    e_memory = layers.concatenate([e_m1, e_m2])
-    e_state = [e_hidden, e_memory]
+    e_out = layers.LSTM(hidden_dim, return_sequences=True, name='encoder1')(e_out)
+    e_out, *e_state = layers.LSTM(hidden_dim, return_state=True, name='encoder2')(e_out)
 
     encoder = Model([e_num_input, e_ohe_input], e_state)
 
@@ -32,12 +26,13 @@ def init_lstm_bidirect(hidden_dim, ohe_embed_dim):
     d_ohe = layers.Dense(ohe_embed_dim, use_bias=False)(d_ohe)
 
     d_out = layers.concatenate([d_num, d_ohe])
-    d_out, *d_state = layers.LSTM(2*hidden_dim, return_sequences=True, return_state=True)(d_out, initial_state=e_state)
+    d_out = layers.LSTM(hidden_dim, return_sequences=True, name='decoder1')(d_out, initial_state=e_state)
+    d_out, *d_state = layers.LSTM(hidden_dim, return_sequences=True, return_state=True)(d_out)
 
-    d_num_output = layers.Dropout(0.1)(d_out)
+    d_num_output = layers.Dropout(dropout)(d_out)
     d_num_output = layers.Dense(4, activation='linear', name='output_num')(d_num_output)
 
-    d_ohe_output = layers.Dropout(0.1)(d_out)
+    d_ohe_output = layers.Dropout(dropout)(d_out)
     d_ohe_output = layers.Dense(13, activation='softmax', name='output_cat')(d_ohe_output)
 
     decoder = Model([d_num_input, d_ohe_input, *e_state], [d_num_output, d_ohe_output, *d_state])
@@ -48,7 +43,7 @@ def init_lstm_bidirect(hidden_dim, ohe_embed_dim):
     return model, encoder, decoder
 
 
-_, encoder, decoder = init_lstm_bidirect(64, 7)
+_, encoder, decoder = init_architecture(128, 8, 0.2)
 encoder.load_weights('weights/encoder/')
 decoder.load_weights('weights/decoder/')
 
