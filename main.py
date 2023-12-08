@@ -28,8 +28,9 @@ if uploaded_file is not None:
     midi = convert_to_midi(uploaded_file)
     instrument = midi.instruments[0]
 
-    # play midi
-    # with st.spinner(f"Transcribing to FluidSynth"):
+    # 3. Play the midi file, letting the user choose the instrument
+    st.markdown("Choose an instrument to play your chords")
+    st.select_slider()
     audio_data = midi.fluidsynth()
     audio_data = np.int16(
         audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9

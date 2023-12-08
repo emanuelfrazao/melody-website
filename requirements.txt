@@ -1,8 +1,8 @@
-streamlit
 mido
 pretty-midi
 pyfluidsynth
 scipy
-soundfile
+soundfile 
+streamlit
+
 basic-pitch
-jupyter
