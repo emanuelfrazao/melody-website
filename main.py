@@ -54,7 +54,7 @@ if uploaded_file is not None:
         # 4. Get melody generation from model
             melody = generate(x_num, x_cat, temperature=0.8)
             melody_df = postprocess_melody_encoded(melody)
-            melody_instrument = dataframe_to_instrument(melody_df)
+            melody_instrument = dataframe_to_instrument(melody_df, program=25)
             st.success("Melody generated!")
 
         # 5. Join model generation with original MIDI track

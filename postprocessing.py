@@ -32,7 +32,7 @@ def row_to_note(note_row: pd.Series) -> pretty_midi.Note:
         end=note_row['end']
     )
 
-def dataframe_to_instrument(notes_df: pd.DataFrame, program: int=1) -> pretty_midi.Instrument:
+def dataframe_to_instrument(notes_df: pd.DataFrame, program: int=25) -> pretty_midi.Instrument:
     instrument = pretty_midi.Instrument(program=program)
     notes = notes_df.apply(row_to_note, axis=1).tolist()
     instrument.notes = notes
