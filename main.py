@@ -42,8 +42,8 @@ if uploaded_file is not None:
     st.audio(uploaded_file, format=f"audio/{format}", start_time=0)
 
 
-    st.button("Generate", on_click=lambda: generate_button)
-    if st.session_state['generating']:
+    
+    if st.button("Generate", on_click=lambda: generate_button):
         # 2. Convert the wav to midi format
         with st.spinner('Converting your chords to MIDI...'):
             midi = convert_to_midi(uploaded_file)
