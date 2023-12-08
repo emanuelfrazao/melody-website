@@ -30,7 +30,6 @@ if uploaded_file is not None:
 
     # 3. Play the midi file, letting the user choose the instrument
     st.markdown("Choose an instrument to play your chords")
-    st.select_slider()
     audio_data = midi.fluidsynth()
     audio_data = np.int16(
         audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9
@@ -43,7 +42,7 @@ if uploaded_file is not None:
     st.markdown("Download the audio by right-clicking on the media player")
 
     # 3. Preprocess the midi file for modelling
-    #rhythm = build_rhythm_array_from_track(instrument)
+    # rhythm = build_rhythm_array_from_track(instrument)
 
     # 4. Get melody generation from model
     #melody_gen = MelodyGenerator(encoder_weights_path='./weights/encoder/', decoder_weights_path='./weights/decoder/')
