@@ -25,14 +25,25 @@ st.set_page_config(page_title="MIDI File Player", layout="wide")
 st.title("Melody Tragic")
 st.write("Upload your chords, download your masterpiece!")
 
+# Initialization
+if 'generating' not in st.session_state:
+    st.session_state['generating'] = False
+if 'generated' not in st.session_state:
+    st.session_state['generated'] = False
+
+def generate_button():
+    st.session_state['generating'] = True
+    st.session_state['generated'] = True
+
 # 1. Upload audio file (must be wav, mp3, or midi)
 uploaded_file = st.file_uploader("Upload your chords", type=["wav"])
 if uploaded_file is not None:
     format = uploaded_file.name.split(".")[-1]
     st.audio(uploaded_file, format=f"audio/{format}", start_time=0)
 
-    if st.button("Generate"):
 
+    st.button("Generate", callable=lambda: generate_button)
+    if st.session_state['generating']:
         # 2. Convert the wav to midi format
         with st.spinner('Converting your chords to MIDI...'):
             midi = convert_to_midi(uploaded_file)
@@ -56,8 +67,10 @@ if uploaded_file is not None:
 
         # 5. Join model generation with original MIDI track
             midi.instruments.append(melody_instrument)
-            st.success("Melody joined!")
-
+            st.success("Melody joined with chords!")
+        st.session_state['generating'] = False
+    
+    if st.session_state['generated']:
         # 6. Let the user download the MIDI file
         midi_data = BytesIO()
         midi.write(midi_data)
