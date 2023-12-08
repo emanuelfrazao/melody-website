@@ -22,7 +22,7 @@ from converter import convert_to_midi
 
 
 st.set_page_config(page_title="MIDI File Player", layout="wide")
-st.title("Melody Tragic")
+st.title("Melody Magic")
 st.write("Upload your chords, download your masterpiece!")
 
 # Initialization = True
