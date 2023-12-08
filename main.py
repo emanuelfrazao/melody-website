@@ -29,17 +29,18 @@ if uploaded_file is not None:
     instrument = midi.instruments[0]
 
     # 3. Play the midi file, letting the user choose the instrument
-    st.markdown("Choose an instrument to play your chords")
-    audio_data = midi.fluidsynth()
-    audio_data = np.int16(
-        audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9
-    )  # -- Normalize for 16 bit audio https://github.com/jkanner/streamlit-audio/blob/main/helper.py
+    with st.spinner(f"Transcribing to FluidSynth"):
+        st.markdown("Choose an instrument to play your chords")
+        audio_data = midi.fluidsynth()
+        audio_data = np.int16(
+            audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9
+        )  # -- Normalize for 16 bit audio https://github.com/jkanner/streamlit-audio/blob/main/helper.py
 
-    virtual_file = BytesIO()
-    wavfile.write(virtual_file, 44100, audio_data)
+        virtual_file = BytesIO()
+        wavfile.write(virtual_file, 44100, audio_data)
 
-    st.audio(virtual_file)
-    st.markdown("Download the audio by right-clicking on the media player")
+        st.audio(virtual_file)
+        st.markdown("Download the audio by right-clicking on the media player")
 
     # 3. Preprocess the midi file for modelling
     # rhythm = build_rhythm_array_from_track(instrument)
