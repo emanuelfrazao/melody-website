@@ -1,0 +1,8 @@
+streamlit
+mido
+pretty-midi
+pyfluidsynth
+scipy
+soundfile
+basic-pitch
+jupyter
